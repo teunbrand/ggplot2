@@ -55,6 +55,19 @@ annotate <- function(geom, x = NULL, y = NULL, xmin = NULL, xmax = NULL,
   ))
   aesthetics <- c(position, list(...))
 
+  # Position and stat are hardcoded. Throw error if this is attempted to change.
+  if (any(c("position", "stat") %in% names(aesthetics))) {
+    args <- intersect(c("position", "stat"), names(aesthetics))
+    geom <- if (is.character(geom)) paste0("geom_", geom) else snake_class(geom)
+    cli::cli_abort(c(
+      "{.fn annotate} cannot use {?the/} {.arg {args}} argument{?s}.",
+      i = paste0(
+        "To use {cli::qty(args)} {?this/these} argument{?s}, ",
+        "use the {.fn {geom_name}} function instead."
+      )
+    ))
+  }
+
   # Check that all aesthetic have compatible lengths
   lengths <- vapply(aesthetics, length, integer(1))
   n <- unique0(lengths)
