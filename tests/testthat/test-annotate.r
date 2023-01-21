@@ -76,3 +76,7 @@ test_that("unsupported geoms signal a warning (#4719)", {
 test_that("annotate() checks aesthetic lengths match", {
   expect_snapshot_error(annotate("point", 1:3, 1:3, fill = c('red', 'black')))
 })
+
+test_that("annotate() rejects stat/position arguments", {
+  expect_snapshot_error(annotate("point", position = "dodge", stat = "count"))
+})
