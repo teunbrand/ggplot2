@@ -560,6 +560,16 @@ check_breaks_labels <- function(breaks, labels) {
     cli::cli_abort("{.arg breaks} and {.arg labels} must have the same length")
   }
 
+  if (is.atomic(labels) && !is.atomic(breaks)) {
+    cli::cli_inform(c(paste0(
+      "The {.arg labels} argument is set with a vector, whereas the ",
+      "{.arg breaks} argument is not."
+    ), i = paste0(
+      "It is best practise to also set {.arg breaks} when providing ",
+      "{.arg labels}."
+    )))
+  }
+
   TRUE
 }
 
