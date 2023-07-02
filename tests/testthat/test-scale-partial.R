@@ -1,4 +1,23 @@
 
+test_that("partial scales throw appropriate errors", {
+
+  # Fine nothing to update
+  expect_null(scale_partial())
+
+  # Unnamed arguments
+  expect_snapshot_error(scale_partial(1, 2, 3))
+
+  # Duplicated arguments
+  expect_snapshot_error(
+    scale_partial(limits = c(1, 10), limits = c(2, 10), breaks = 1, breaks = 2)
+  )
+
+  # No shenanigans with aesthetics
+  expect_snapshot_error(
+    scale_partial(list(), name = "foobar")
+  )
+})
+
 test_that("partial scales can be updated", {
 
   # Partial scales
