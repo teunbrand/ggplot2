@@ -15,3 +15,12 @@
 
     Ignoring unknown scale parameter: foo.
 
+---
+
+    `breaks` and `labels` must have the same length
+
+---
+
+    Continuous limits supplied to discrete scale.
+    i Did you mean `= limits = factor(...)` or `scale_*_continuous()`?
+

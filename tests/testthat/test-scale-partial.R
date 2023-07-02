@@ -86,4 +86,31 @@ test_that("partial scale input is checked as valid fields", {
   )
 })
 
+test_that("overriding scales works", {
+
+  # Full overrides partial
+  full <- scale_x_continuous(limits = c(0, 10))
+  p <- ggplot() + scale_x(name = "foo", limits = c(0, 1)) + full
+
+  ## Check inheritance is correct
+  resolved <- p$scales$get_scales("x")
+  expect_equal(resolved$name, "foo")
+  expect_equal(resolved$limits, c(0, 10))
+
+  ## Check state hasn't changed
+  expect_equal(full$name, waiver())
+
+  # Partial overrides full
+  full <- scale_x_continuous(name = "foo", limits = c(0, 10))
+  p <- ggplot() + full + scale_x(limits = c(0, 1))
+
+  ## Check inheritance is correct
+  resolved <- p$scales$get_scales("x")
+  expect_equal(resolved$name, "foo")
+  expect_equal(resolved$limits, c(0, 1))
+
+  ## Check state hasn't changed
+  expect_equal(full$limits, c(0, 10))
+})
+
 
