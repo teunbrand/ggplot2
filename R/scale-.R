@@ -393,6 +393,9 @@ binned_scale <- function(aesthetics, scale_name, palette, name = waiver(),
 #' - `make_sec_title()` Hook to modify the title for the second axis that is calculated
 #'   when the `Layout` calculates the x and y labels.
 #'
+#' - `user_fields` A character vector naming ggproto members that may be updated
+#'   by partial scales.
+#'
 #' @rdname ggplot2-ggproto
 #' @format NULL
 #' @usage NULL
@@ -543,6 +546,9 @@ Scale <- ggproto("Scale", NULL,
 
   make_sec_title = function(title) {
     title
+  },
+
+  user_fields = NULL
   }
 )
 
@@ -809,6 +815,11 @@ ScaleContinuous <- ggproto("ScaleContinuous", Scale,
     } else {
       cat(" Limits: ", show_range(self$dimension()), "\n", sep = "")
     }
+  },
+
+  user_fields = c("name", "breaks", "minor_breaks", "n.breaks", "labels",
+                  "limits", "rescaler", "oob", "expand", "na.value",
+                  "trans", "guide", "palette")
   }
 )
 
@@ -981,6 +992,10 @@ ScaleDiscrete <- ggproto("ScaleDiscrete", Scale,
       major_source = major,
       minor_source = NULL
     )
+  },
+
+  user_fields = c("name", "breaks", "labels", "limits", "expand", "na.value",
+                  "na.translate", "drop", "guide", "palette")
   }
 )
 

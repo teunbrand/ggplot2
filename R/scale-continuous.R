@@ -151,7 +151,12 @@ ScaleContinuousPosition <- ggproto("ScaleContinuousPosition", ScaleContinuous,
     } else {
       ggproto_parent(ScaleContinuous, self)$make_sec_title(title)
     }
-  }
+  },
+
+  # Relative to ScaleContinuous: no "palette", but added "position"
+  user_fields = c("name", "breaks", "minor_breaks", "n.breaks", "labels",
+                  "limits", "rescaler", "oob", "expand", "na.value", "trans",
+                  "guide", "position")
 )
 
 # Transformed scales ---------------------------------------------------------

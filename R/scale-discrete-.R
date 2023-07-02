@@ -140,7 +140,11 @@ ScaleDiscretePosition <- ggproto("ScaleDiscretePosition", ScaleDiscrete,
     new$range <- DiscreteRange$new()
     new$range_c <- ContinuousRange$new()
     new
-  }
+  },
+
+  # Relative to ScaleDiscrete: no "palette", but added "position"
+  user_fields = c("name", "breaks", "labels", "limits", "expand", "na.value",
+                  "na.translate", "drop", "guide", "position")
 )
 
 # Can't use vctrs - vctrs is too restrictive for mapped_discrete
