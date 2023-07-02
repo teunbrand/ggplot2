@@ -33,7 +33,7 @@ ScalesList <- ggproto("ScalesList", NULL,
     if (inherits(scale, "ScalePartial")) {
       # Clone scale to avoid state changes elsewhere
       prev_scale <- prev_scale$clone()
-      prev_scale$update_params(scale$params, default = TRUE)
+      prev_scale$update_params(scale$params, default = TRUE, call = scale$call)
       self$scales <- c(self$scales[!prev_aes], list(prev_scale))
       return()
     }
@@ -42,7 +42,8 @@ ScalesList <- ggproto("ScalesList", NULL,
         # This scale is user-supplied so we clone it to avoid state changes
         scale <- scale$clone()
       }
-      scale$update_params(prev_scale$params, default = default)
+      scale$update_params(prev_scale$params, default = default,
+                          call = prev_scale$call)
       self$scales <- c(self$scales[!prev_aes], list(scale))
       return()
     }
