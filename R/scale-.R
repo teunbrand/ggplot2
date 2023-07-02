@@ -396,6 +396,12 @@ binned_scale <- function(aesthetics, scale_name, palette, name = waiver(),
 #' - `user_fields` A character vector naming ggproto members that may be updated
 #'   by partial scales.
 #'
+#' - `validate()` Checks if updated arguments are compatible.
+#'
+#' - `update_params()` is a function that takes `params` from a partial scale
+#'   and merges these into `self`. It only updates parameters declared in
+#'   `user_fields` and calls `validate()` to ensure compatibility.
+#'
 #' @rdname ggplot2-ggproto
 #' @format NULL
 #' @usage NULL
@@ -548,7 +554,31 @@ Scale <- ggproto("Scale", NULL,
     title
   },
 
-  user_fields = NULL
+  user_fields = NULL,
+
+  validate = function(self) {
+    # TODO: make validator
+    return()
+  },
+
+  update_params = function(self, params, default = FALSE) {
+    fields <- self$user_fields
+    fields <- intersect(fields, names(params))
+    extra  <- setdiff(names(params), fields)
+    if (length(extra) > 0) {
+      cli::cli_warn(
+        "Ignoring unknown scale parameter{?s}: {.and {.field {extra}}}."
+      )
+    }
+    if (length(fields) < 1) {
+      # Nothing to update here
+      return()
+    }
+    for (field in fields) {
+      self[[field]] <- params[[field]]
+    }
+    self$validate()
+    return()
   }
 )
 
@@ -820,7 +850,6 @@ ScaleContinuous <- ggproto("ScaleContinuous", Scale,
   user_fields = c("name", "breaks", "minor_breaks", "n.breaks", "labels",
                   "limits", "rescaler", "oob", "expand", "na.value",
                   "trans", "guide", "palette")
-  }
 )
 
 
@@ -996,7 +1025,6 @@ ScaleDiscrete <- ggproto("ScaleDiscrete", Scale,
 
   user_fields = c("name", "breaks", "labels", "limits", "expand", "na.value",
                   "na.translate", "drop", "guide", "palette")
-  }
 )
 
 #' @rdname ggplot2-ggproto
