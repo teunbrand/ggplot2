@@ -556,8 +556,15 @@ Scale <- ggproto("Scale", NULL,
 
   user_fields = NULL,
 
-  validate = function(self) {
-    # TODO: make validator
+  validate = function(self, fields = self$user_fields) {
+
+    if (any(c("breaks", "labels") %in% fields)) {
+      check_breaks_labels(self$breaks, self$labels)
+    }
+    if ("breaks" %in% fields && !any(c("x", "y") %in% self$aesthetics)) {
+      self$guide <- "none"
+    }
+
     return()
   },
 
@@ -578,7 +585,7 @@ Scale <- ggproto("Scale", NULL,
     for (field in fields) {
       self[[field]] <- params[[field]]
     }
-    self$validate()
+    self$validate(fields)
     return()
   }
 )
@@ -850,7 +857,30 @@ ScaleContinuous <- ggproto("ScaleContinuous", Scale,
 
   user_fields = c("name", "breaks", "minor_breaks", "n.breaks", "labels",
                   "limits", "rescaler", "oob", "expand", "na.value",
-                  "trans", "guide", "palette")
+                  "trans", "guide", "palette"),
+
+  validate = function(self, fields = self$user_fields) {
+    ggproto_parent(Scale, self)$validate(fields)
+
+    if ("trans" %in% fields) {
+      self$trans <- as.trans(self$trans)
+    }
+    if ("limits" %in% fields) {
+      if (length(self$limits) != 2) {
+        cli::cli_abort("{.arg limits} must be a vector of length 2.")
+      }
+      if (!is.null(self$limits) && !is.function(self$limits)) {
+        self$limits <- self$trans$transform(self$limits)
+      }
+    }
+    if ("rescaler" %in% fields) {
+      check_function(self$rescaler)
+    }
+    if ("oob" %in% fields) {
+      check_function(self$oob)
+    }
+    return()
+  }
 )
 
 
@@ -1025,7 +1055,21 @@ ScaleDiscrete <- ggproto("ScaleDiscrete", Scale,
   },
 
   user_fields = c("name", "breaks", "labels", "limits", "expand", "na.value",
-                  "na.translate", "drop", "guide", "palette")
+                  "na.translate", "drop", "guide", "palette"),
+
+  validate = function(self, fields = self$user_fields) {
+    ggproto_parent(Scale, self)$validate(fields)
+
+    if ("limits" %in% fields) {
+      cli::cli_warn(c(
+        "Continuous limits supplied to discrete scale.",
+        "i" = paste0(
+          "Did you mean {.code = limits = factor(...)} or ",
+          "{.fn scale_*_continuous}?"
+        )
+      ))
+    }
+  }
 )
 
 #' @rdname ggplot2-ggproto

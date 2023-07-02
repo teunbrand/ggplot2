@@ -49,10 +49,21 @@ test_that("partial scales can be updated", {
 
 test_that("partial scale input is checked as valid fields", {
 
+  # Check nonsense is warned about
   p <- ggplot() + scale_x(foo = "bar", limits = c(0, 1))
-
   expect_snapshot_warning(
     p$scales$add_missing(c("x", "y"), env = current_env())
+  )
+
+  # Check incompatible arguments
+  p <- ggplot() + scale_x(breaks = c(1, 2), labels = c("A", "B", "C"))
+  expect_snapshot_error(
+    p$scales$add_missing(c("x", "y"), env = current_env())
+  )
+
+  # No continuous limits to discrete scales
+  expect_snapshot_warning(
+    p <- ggplot() + scale_x(limits = c(0, 10)) + scale_x_discrete()
   )
 })
 
