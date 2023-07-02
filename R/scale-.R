@@ -85,6 +85,7 @@
 #'   expand the scale by 5% on each side for continuous variables, and by
 #'   0.6 units on each side for discrete variables.
 #' @param position For position scales, The position of the axis.
+#' @param call A `call` object to report user input.
 #' `left` or `right` for y axes, `top` or `bottom` for x axes.
 #' @param super The super class to use for the constructed scale
 #' @keywords internal
@@ -93,6 +94,7 @@ continuous_scale <- function(aesthetics, scale_name, palette, name = waiver(),
                              labels = waiver(), limits = NULL, rescaler = rescale,
                              oob = censor, expand = waiver(), na.value = NA_real_,
                              trans = "identity", guide = "legend", position = "left",
+                             call = caller_call(),
                              super = ScaleContinuous) {
 
   aesthetics <- standardise_aes_names(aesthetics)
@@ -120,7 +122,7 @@ continuous_scale <- function(aesthetics, scale_name, palette, name = waiver(),
   minor_breaks <- allow_lambda(minor_breaks)
 
   ggproto(NULL, super,
-    call = match.call(),
+    call = call %||% current_call(),
 
     aesthetics = aesthetics,
     scale_name = scale_name,
@@ -179,7 +181,8 @@ continuous_scale <- function(aesthetics, scale_name, palette, name = waiver(),
 discrete_scale <- function(aesthetics, scale_name, palette, name = waiver(),
                            breaks = waiver(), labels = waiver(), limits = NULL, expand = waiver(),
                            na.translate = TRUE, na.value = NA, drop = TRUE,
-                           guide = "legend", position = "left", super = ScaleDiscrete) {
+                           guide = "legend", position = "left",
+                           call = caller_call(), super = ScaleDiscrete) {
 
   aesthetics <- standardise_aes_names(aesthetics)
 
@@ -205,7 +208,7 @@ discrete_scale <- function(aesthetics, scale_name, palette, name = waiver(),
   }
 
   ggproto(NULL, super,
-    call = match.call(),
+    call = call %||% current_call(),
 
     aesthetics = aesthetics,
     scale_name = scale_name,
