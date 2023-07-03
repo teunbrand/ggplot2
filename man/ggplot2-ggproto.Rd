@@ -506,6 +506,12 @@ for discrete scales), \code{major} (the rescaled value of \code{major_source}, i
 \item \code{axis_order()} One of \code{c("primary", "secondary")} or \code{c("secondary", "primary")}
 \item \code{make_sec_title()} Hook to modify the title for the second axis that is calculated
 when the \code{Layout} calculates the x and y labels.
+\item \code{user_fields} A character vector naming ggproto members that may be updated
+by partial scales.
+\item \code{validate()} Checks if updated arguments are compatible.
+\item \code{update_params()} is a function that takes \code{params} from a partial scale
+and merges these into \code{self}. It only updates parameters declared in
+\code{user_fields} and calls \code{validate()} to ensure compatibility.
 }
 }
 

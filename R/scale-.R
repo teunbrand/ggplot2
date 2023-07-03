@@ -85,8 +85,8 @@
 #'   expand the scale by 5% on each side for continuous variables, and by
 #'   0.6 units on each side for discrete variables.
 #' @param position For position scales, The position of the axis.
+#'   `left` or `right` for y axes, `top` or `bottom` for x axes.
 #' @param call A `call` object to report user input.
-#' `left` or `right` for y axes, `top` or `bottom` for x axes.
 #' @param super The super class to use for the constructed scale
 #' @keywords internal
 continuous_scale <- function(aesthetics, scale_name, palette, name = waiver(),

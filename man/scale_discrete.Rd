@@ -61,6 +61,7 @@ transformation object
 as output. Also accepts rlang \link[rlang:as_function]{lambda} function
 notation.
 }}
+    \item{\code{call}}{A \code{call} object to report user input.}
     \item{\code{super}}{The super class to use for the constructed scale}
   }}
 

@@ -1,4 +1,56 @@
 
+#' Partial scales
+#'
+#' Partial scales can be used to adjust scale parameters without
+#' explicitly committing to a particular type of scale.
+#'
+#' @param name The name of the scale that can be used as guide title.
+#' @param ... Other parameters passed to scales. Many of these depend on the
+#'   eventual scale type, but `limits`, `breaks`, `labels` and `guide` are
+#'   commonplace.
+#'
+#' @details
+#' Parameters set via partial scales may be overridden by adding 'full' scales
+#' to a plot. If no full scales are added to a plot, the parameters from
+#' the partial scales are passed to the default full scale. Therefore, some
+#' care must be taken to not accidentally pass a continuous scale parameter,
+#' like `trans`, to discrete scales, or pass a `palette` to a position scale.
+#'
+#' @return A `<ScalePartial>` object that can be added to a plot.
+#' @name partial-scales
+#'
+#' @examples
+#' # TODO
+NULL
+
+#' @export
+#' @rdname partial-scales
+scale_x <- function(name = waiver(), ...) {
+  scale_partial("x", name, ..., call = caller_call() %||% current_call())
+}
+
+#' @export
+#' @rdname partial-scales
+scale_y <- function(name = waiver(), ...) {
+  scale_partial("y", name, ..., call = caller_call() %||% current_call())
+}
+
+#' Partial scales constructor
+#'
+#' Constructor for partial scales.
+#'
+#' @param aesthetic A string for an aesthetic, like `"x"` or `"shape"`.
+#' @param name A name for a scale.
+#' @param ...,.args Named arguments to pass on to the final scale. Use either
+#'   `...` as dynamic dots, or `.args` as a named list.
+#' @param call A `call` object for reporting the scale in messages.
+#'
+#' @return A `<ScalePartial>` ggproto object that can be added to a plot.
+#' @export
+#' @keywords internal
+#'
+#' @examples
+#' NULL
 scale_partial <- function(aesthetic, name = waiver(), ..., .args = NULL,
                           call = caller_call() %||% current_call()) {
 
@@ -60,12 +112,4 @@ ScalePartial <- ggproto(
     ggproto(NULL, self)
   }
 )
-
-scale_x <- function(name = waiver(), ...) {
-  scale_partial("x", name, ..., call = caller_call() %||% current_call())
-}
-
-scale_y <- function(name = waiver(), ...) {
-  scale_partial("y", name, ..., call = caller_call() %||% current_call())
-}
 
