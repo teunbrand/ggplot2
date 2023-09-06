@@ -218,8 +218,11 @@ is_calculated_aes <- function(aesthetics, warn = FALSE) {
 is_scaled_aes <- function(aesthetics) {
   vapply(aesthetics, is_scaled, logical(1), USE.NAMES = FALSE)
 }
-is_staged_aes <- function(aesthetics) {
-  vapply(aesthetics, is_staged, logical(1), USE.NAMES = FALSE)
+is_staged_aes <- function(aesthetics, after_stat = NA, after_scale = NA) {
+  vapply(
+    aesthetics, is_staged, logical(1), USE.NAMES = FALSE,
+    after_stat = after_stat, after_scale = after_scale
+  )
 }
 is_calculated <- function(x, warn = FALSE) {
   if (is_call(get_expr(x), "after_stat")) {
@@ -260,8 +263,20 @@ is_calculated <- function(x, warn = FALSE) {
 is_scaled <- function(x) {
   is_call(get_expr(x), "after_scale")
 }
-is_staged <- function(x) {
-  is_call(get_expr(x), "stage")
+is_staged <- function(x, after_stat = NA, after_scale = NA) {
+  uq_expr <- get_expr(x)
+  ans <- is_call(uq_expr, "stage")
+  if (!ans || (is.na(after_stat) && is.na(after_scale))) {
+    return(ans)
+  }
+  arg_nms <- call_args_names(uq_expr)
+  if (!is.na(after_stat)) {
+    ans <- ans && (("after_stat" %in% arg_nms) == after_stat)
+  }
+  if (!is.na(after_scale)) {
+    ans <- ans && (("after_scale" %in% arg_nms) == after_scale)
+  }
+  ans
 }
 
 # Strip dots from expressions
