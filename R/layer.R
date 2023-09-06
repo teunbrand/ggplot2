@@ -375,7 +375,8 @@ Layer <- ggproto("Layer", NULL,
     names(stat_data) <- names(new)
     stat_data <- data_frame0(!!!compact(stat_data))
 
-    # Add any new scales, if needed
+    # Add any new scales, if needed. Skip staged expression without after_stat
+    new <- new[!is_staged_aes(new, after_stat = FALSE)]
     plot$scales$add_defaults(data, new, plot$plot_env)
     # Transform the values, if the scale say it's ok
     # (see stat_spoke for one exception)
