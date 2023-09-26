@@ -222,12 +222,27 @@ CoordSf <- ggproto("CoordSf", CoordCartesian,
       x_range[2], y_range[2]
     )
 
+    x_breaks <- y_breaks <- list(breaks = NULL, remove = FALSE)
+    remove_x <- remove_y <- FALSE
+
+    # Compute breaks
+    if (!is.waive(scale_x$breaks) || !is.waive(scale_y$breaks)) {
+      longlat_bbox <- sf::st_as_sfc(sf::st_bbox(
+        c(xmin = x_range[1], xmax = x_range[2],
+          ymin = y_range[1], ymax = y_range[2]),
+        crs = params$crs
+      ))
+      longlat_bbox <- sf::st_bbox(sf::st_transform(longlat_bbox, 4326))
+      x_breaks <- resolve_sf_breaks(scale_x, longlat_bbox[c(1, 3)])
+      y_breaks <- resolve_sf_breaks(scale_y, longlat_bbox[c(2, 4)])
+    }
+
     # Generate graticule and rescale to plot coords
     graticule <- sf::st_graticule(
       bbox,
       crs = params$crs,
-      lat = scale_y$breaks %|W|% NULL,
-      lon = scale_x$breaks %|W|% NULL,
+      lat = y_breaks$breaks,
+      lon = x_breaks$breaks,
       datum = self$datum,
       ndiscr = self$ndiscr
     )
