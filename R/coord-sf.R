@@ -222,17 +222,23 @@ CoordSf <- ggproto("CoordSf", CoordCartesian,
       x_range[2], y_range[2]
     )
 
-    x_breaks <- y_breaks <- list(breaks = NULL, remove = FALSE)
+    x_breaks <- y_breaks <- waiver()
     remove_x <- remove_y <- FALSE
 
     # Compute breaks
     if (!is.waive(scale_x$breaks) || !is.waive(scale_y$breaks)) {
+      # The convention for atomic breaks is that these are long/lat coordinates.
+      # If breaks is a function, we need to provide the limits as long/lat
+      # coordinates to be consistent.
       longlat_bbox <- sf::st_as_sfc(sf::st_bbox(
         c(xmin = x_range[1], xmax = x_range[2],
           ymin = y_range[1], ymax = y_range[2]),
         crs = params$crs
       ))
       longlat_bbox <- sf::st_bbox(sf::st_transform(longlat_bbox, 4326))
+      # We need some extra care here because `breaks = NULL` means not drawing
+      # any gridlines/axes, but `sf::st_graticule()` interprets `NULL` as
+      # the default breaks.
       x_breaks <- resolve_sf_breaks(scale_x, longlat_bbox[c(1, 3)])
       y_breaks <- resolve_sf_breaks(scale_y, longlat_bbox[c(2, 4)])
     }
@@ -241,16 +247,16 @@ CoordSf <- ggproto("CoordSf", CoordCartesian,
     graticule <- sf::st_graticule(
       bbox,
       crs = params$crs,
-      lat = y_breaks$breaks,
-      lon = x_breaks$breaks,
+      lat = y_breaks %|W|% NULL,
+      lon = x_breaks %|W|% NULL,
       datum = self$datum,
       ndiscr = self$ndiscr
     )
 
-    if (x_breaks$remove) {
+    if (is.null(x_breaks)) {
       graticule <- vec_slice(graticule, graticule$type != "E")
     }
-    if (y_breaks$remove) {
+    if (is.null(y_breaks)) {
       graticule <- vec_slice(graticule, graticule$type != "N")
     }
 
@@ -609,24 +615,19 @@ parse_axes_labeling <- function(x) {
   list(top = labs[1], right = labs[2], bottom = labs[3], left = labs[4])
 }
 
+# This function doesn't resolve waivers to use the graticule's default breaks.
+# In addition, it does some input validation for the graticule.
 resolve_sf_breaks <- function(scale, limits) {
   if (is.waive(scale$breaks)) {
-    return(list(breaks = NULL, remove = FALSE))
+    return(waiver())
   }
-  if (is.null(scale$breaks)) {
-    remove <- TRUE
-  } else {
-    breaks <- scale$get_breaks(limits = limits)
-    breaks <- len0_null(breaks[is.finite(breaks)])
-    remove <- length(breaks) < 1
-  }
-  if (remove) {
+  breaks <- scale$get_breaks(limits = limits)
+  # The graticule doesn't accept NA/Inf or length 0 vectors, so discard these.
+  breaks <- breaks[is.finite(breaks)]
+  if (length(breaks) == 0) {
     breaks <- NULL
   }
-  list(
-    breaks = breaks,
-    remove = remove
-  )
+  breaks
 }
 
 #' ViewScale from graticule
