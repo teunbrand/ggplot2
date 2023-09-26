@@ -265,6 +265,16 @@ CoordSf <- ggproto("CoordSf", CoordCartesian,
     )
   },
 
+  train_panel_guides = function(self, panel_params, layers, params = list()) {
+    # The guide positions are already defined in the target CRS.
+    # To prevent a double transformation, we're overriding the default CRS.
+    panel_params$guides <- ggproto_parent(Coord, self)$train_panel_guides(
+      vec_assign(panel_params, "default_crs", panel_params["crs"]),
+      layers, params
+    )$guides
+    panel_params
+  },
+
   backtransform_range = function(self, panel_params) {
     target_crs <- panel_params$default_crs
     source_crs <- panel_params$crs
