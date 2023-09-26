@@ -247,6 +247,13 @@ CoordSf <- ggproto("CoordSf", CoordCartesian,
       ndiscr = self$ndiscr
     )
 
+    if (x_breaks$remove) {
+      graticule <- vec_slice(graticule, graticule$type != "E")
+    }
+    if (y_breaks$remove) {
+      graticule <- vec_slice(graticule, graticule$type != "N")
+    }
+
     # override graticule labels provided by sf::st_graticule() if necessary
     graticule <- self$fixup_graticule_labels(graticule, scale_x, scale_y, params)
 
