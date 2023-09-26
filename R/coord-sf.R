@@ -587,6 +587,25 @@ parse_axes_labeling <- function(x) {
   list(top = labs[1], right = labs[2], bottom = labs[3], left = labs[4])
 }
 
+resolve_sf_breaks <- function(scale, limits) {
+  if (is.waive(scale$breaks)) {
+    return(list(breaks = NULL, remove = FALSE))
+  }
+  if (is.null(scale$breaks)) {
+    remove <- TRUE
+  } else {
+    breaks <- scale$get_breaks(limits = limits)
+    breaks <- len0_null(breaks[is.finite(breaks)])
+    remove <- length(breaks) < 1
+  }
+  if (remove) {
+    breaks <- NULL
+  }
+  list(
+    breaks = breaks,
+    remove = remove
+  )
+}
 
 #' ViewScale from graticule
 #'
