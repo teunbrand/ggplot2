@@ -255,19 +255,14 @@ CoordSf <- ggproto("CoordSf", CoordCartesian,
     graticule$y_start <- sf_rescale01_x(graticule$y_start, y_range)
     graticule$y_end <- sf_rescale01_x(graticule$y_end, y_range)
 
-    list(
+    list2(
       x_range = x_range,
       y_range = y_range,
       graticule = graticule,
       crs = params$crs,
       default_crs = params$default_crs,
-      viewscales = viewscales
+      !!!viewscales
     )
-  },
-
-  setup_panel_guides = function(self, panel_params, guides, params = list()) {
-    params <- Coord$setup_panel_guides(panel_params$viewscales, guides, params)
-    c(params, panel_params)
   },
 
   backtransform_range = function(self, panel_params) {
