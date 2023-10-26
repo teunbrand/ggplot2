@@ -123,7 +123,9 @@ GuideAxis <- ggproto(
     }
 
     minor <- data_frame0(!!aesthetic := scale$map(minor_breaks))
-    minor$.value <- minor_breaks
+    if (!is.character(major$.value)) {
+      minor$.value <- minor_breaks
+    }
     minor$.type <- "minor"
 
     if (nrow(major) > 0) {
