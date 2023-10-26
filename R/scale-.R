@@ -185,6 +185,7 @@ continuous_scale <- function(aesthetics, scale_name = deprecated(), palette, nam
 discrete_scale <- function(aesthetics, scale_name = deprecated(), palette, name = waiver(),
                            breaks = waiver(), labels = waiver(), limits = NULL, expand = waiver(),
                            na.translate = TRUE, na.value = NA, drop = TRUE,
+                           minor_breaks = NULL,
                            guide = "legend", position = "left",
                            call = caller_call(),
                            super = ScaleDiscrete) {
@@ -201,6 +202,7 @@ discrete_scale <- function(aesthetics, scale_name = deprecated(), palette, name 
   limits <- allow_lambda(limits)
   breaks <- allow_lambda(breaks)
   labels <- allow_lambda(labels)
+  minor_breaks <- allow_lambda(minor_breaks)
 
   if (!is.function(limits) && (length(limits) > 0) && !is.discrete(limits)) {
     cli::cli_warn(c(
@@ -230,6 +232,7 @@ discrete_scale <- function(aesthetics, scale_name = deprecated(), palette, name 
 
     name = name,
     breaks = breaks,
+    minor_breaks = minor_breaks,
     labels = labels,
     drop = drop,
     guide = guide,
@@ -956,7 +959,31 @@ ScaleDiscrete <- ggproto("ScaleDiscrete", Scale,
     structure(in_domain, pos = match(in_domain, breaks))
   },
 
-  get_breaks_minor = function(...) NULL,
+  get_breaks_minor = function(
+    self, n = 2, b = self$get_breaks(), limits = self$dimension()
+  ) {
+    if (is.null(self$minor_breaks) || zero_range(as.numeric(limits))) {
+      return(NULL)
+    }
+    if (identical(self$minor_breaks, NA)) {
+      cli::cli_abort(
+        "Invalid {.arg minor_breaks} specification. Use {.val NULL}, not {.val NA}.",
+        call = self$call
+      )
+    }
+    if (is.waive(self$minor_breaks)) {
+      b <- self$map(b)
+      breaks <- regular_minor_breaks()(b, limits, n)
+    } else if (is.function(self$minor_breaks)) {
+      breaks <- self$minor_breaks(limits)
+    } else {
+      breaks <- self$minor_breaks
+    }
+    if (!is.discrete(breaks)) {
+      breaks <- discard(breaks, limits)
+    }
+    self$map(breaks)
+  },
 
   get_labels = function(self, breaks = self$get_breaks()) {
     if (self$is_empty()) {
