@@ -250,6 +250,14 @@ rotate_just <- function(angle, hjust, vjust) {
   #
   #hnew <- cos(rad) * hjust - sin(rad) * vjust + (1 - cos(rad) + sin(rad)) / 2
   #vnew <- sin(rad) * hjust + cos(rad) * vjust + (1 - cos(rad) - sin(rad)) / 2
+  if (is.character(hjust)) {
+    hjust <- match(hjust, c("left", "right")) - 1L
+    hjust[is.na(hjust)] <- 0.5
+  }
+  if (is.character(vjust)) {
+    vjust <- match(vjust, c("bottom", "top")) - 1L
+    vjust[is.na(vjust)] <- 0.5
+  }
 
   angle <- (angle %||% 0) %% 360
 
