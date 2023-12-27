@@ -262,7 +262,7 @@ draw_key_text <- function(data, params, size) {
     unclass(data),
     label = "a", hjust = 0.5, vjust = 0.5, angle = 0
   )
-  just <- rotate_just(data$angle, data$hjust, data$vjust)
+  just <- resolve_just(data$hjust, data$vjust, angle = data$angle)
   grob <- titleGrob(
     data$label,
     x = unit(just$hjust, "npc"), y = unit(just$vjust, "npc"),
@@ -291,7 +291,7 @@ draw_key_label <- function(data, params, size) {
     label = "a", hjust = 0.5, vjust = 0.5, angle = 0
   )
   params$label.size <- params$label.size %||% 0.25
-  just <- rotate_just(data$angle, data$hjust, data$vjust)
+  just <- resolve_just(data$hjust, data$vjust, angle = data$angle)
   padding <- rep(params$label.padding %||% unit(0.25, "lines"), length.out = 4)
   descent <- font_descent(
     family = data$family %||% "",
