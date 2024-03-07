@@ -645,7 +645,7 @@ keep_key_data <- function(key, data, aes, show) {
   if (length(match) == 0) {
     return(TRUE)
   }
-  keep <- rep(FALSE, nrow(key))
+  keep <- is.na(key$.value)
   for (column in match) {
     keep <- keep | key$.value %in% data[[column]]
   }
