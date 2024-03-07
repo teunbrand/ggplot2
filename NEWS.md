@@ -10,6 +10,8 @@
 * Patterns and gradients are now also enabled in `geom_sf()` 
   (@teunbrand, #5716).
 * `stat_bin()` deals with non-finite breaks better (@teunbrand, #5665).
+* Legends now display `NA` breaks regardless of their presence in the data 
+  (@teunbrand, #5749)
 
 # ggplot2 3.5.0
 
