@@ -1,4 +1,18 @@
 
+test_that("date scales reject invalid input to date_* arguments", {
+
+  expect_snapshot_error(
+    scale_x_date(date_breaks = 12)
+  )
+  expect_snapshot_error(
+    scale_x_date(date_labels = identity)
+  )
+  expect_snapshot_error(
+    scale_x_date(date_minor_breaks = expression(10^2))
+  )
+
+})
+
 # Visual tests ------------------------------------------------------------
 
 test_that("date scale draws correctly", {
