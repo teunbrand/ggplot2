@@ -1,5 +1,7 @@
 # ggplot2 (development version)
 
+* The `date_breaks`, `date_labels` and `date_minor_breaks` arguments in 
+  date/time scales throw errors for non-string input (#5880)
 * (Internal) Applying defaults in `geom_sf()` has moved from the internal 
   `sf_grob()` to `GeomSf$use_defaults()` (@teunbrand).
 * `facet_wrap()` has new options for the `dir` argument to more precisely
