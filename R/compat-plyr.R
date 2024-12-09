@@ -57,13 +57,16 @@ id_var <- function(x, drop = FALSE) {
     n <- 0L
   } else if (!is.null(attr(x, "n")) && !drop) {
     return(x)
-  } else if (is.factor(x) && !drop) {
+  } else if (is.factor(x)) {
     x <- addNA(x, ifany = TRUE)
+    if (drop) {
+      x <- droplevels(x, exclude = NULL)
+    }
     id <- as.integer(x)
     n <- nlevels(x)
   } else {
-    levels <- sort(unique0(x), na.last = TRUE)
-    id <- match(x, levels)
+    levels <- vec_sort(unique0(x), na_value = "largest")
+    id <- vec_match(x, levels)
     n <- max(id)
   }
   attr(id, "n") <- n
