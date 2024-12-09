@@ -909,3 +909,13 @@ prompt_install <- function(pkg, reason = NULL) {
   utils::install.packages(pkg)
   is_installed(pkg)
 }
+
+# Simplified purrr:::list_flatten without harded-coded `vec_is_list` predicate
+flatten <- function(x, what = vec_is_list) {
+  proxy <- unclass(x)
+  do_flatten <- vapply(proxy, what, logical(1))
+  proxy[do_flatten]  <- lapply(proxy[do_flatten],  unclass)
+  proxy[!do_flatten] <- lapply(proxy[!do_flatten], list)
+  new <- list_unchop(proxy, ptype = list(), name_spec = "{outer}_{inner}")
+  vec_restore(new, x)
+}
