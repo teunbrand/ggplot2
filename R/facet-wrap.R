@@ -470,6 +470,7 @@ FacetWrap <- ggproto("FacetWrap", Facet,
       labels <- data_frame0("(all)" = "(all)", .size = 1)
     } else {
       labels <- layout[intersect(names(params$facets), names(layout))]
+      labels <- flatten(labels, is.data.frame)
     }
     if (empty(labels)) {
       return(NULL)

@@ -444,7 +444,7 @@ FacetGrid <- ggproto("FacetGrid", Facet,
 
     cols <- intersect(names(layout), names(params$cols))
     if (length(cols) > 0) {
-      col_vars <- unique0(layout[cols])
+      col_vars <- flatten(unique0(layout[cols]), is.data.frame)
       attr(col_vars, "type")  <- "cols"
       attr(col_vars, "facet") <- "grid"
       cols <- data_frame0(!!!labeller(col_vars))
@@ -454,7 +454,7 @@ FacetGrid <- ggproto("FacetGrid", Facet,
 
     rows <- intersect(names(layout), names(params$rows))
     if (length(rows) > 0) {
-      row_vars <- unique0(layout[rows])
+      row_vars <- flatten(unique0(layout[rows]), is.data.frame)
       attr(row_vars, "type")  <- "rows"
       attr(row_vars, "facet") <- "grid"
       rows <- data_frame0(!!!labeller(row_vars))
