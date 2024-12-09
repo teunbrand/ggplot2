@@ -776,6 +776,10 @@ deprecate_warn0 <- function(..., user_env = NULL) {
 }
 
 as_unordered_factor <- function(x) {
+  if (is.list(x)) {
+    x <- vec_restore(lapply(x, as_unordered_factor), x)
+    return(x)
+  }
   x <- as.factor(x)
   class(x) <- setdiff(class(x), "ordered")
   x
