@@ -1,6 +1,8 @@
 
 test_that("all keys can be drawn without 'params'", {
 
+  local_graphics_device()
+
   params <- list()
   size <- convertUnit(calc_element("legend.key.size", theme_gray()), "cm", valueOnly = TRUE)
   size <- size * 10 # cm to mm

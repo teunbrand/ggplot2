@@ -279,11 +279,11 @@ test_that("theme validation happens at build stage", {
 
   # the error occurs when we try to render the plot
   p <- ggplot() + theme(text = 0)
-  expect_snapshot_error(print(p))
+  expect_snapshot_error(ggplotGrob(p))
 
   # without validation, the error occurs when the element is accessed
   p <- ggplot() + theme(text = 0, validate = FALSE)
-  expect_snapshot_error(print(p))
+  expect_snapshot_error(ggplotGrob(p))
 })
 
 test_that("incorrect theme specifications throw meaningful errors", {
@@ -298,7 +298,7 @@ test_that("incorrect theme specifications throw meaningful errors", {
 test_that("element tree can be modified", {
   # we cannot add a new theme element without modifying the element tree
   p <- ggplot() + theme(blablabla = element_text(colour = "red"))
-  expect_snapshot_warning(print(p))
+  expect_snapshot_warning(ggplotGrob(p))
 
   register_theme_elements(
     element_tree = list(blablabla = el_def("character", "text"))
@@ -443,6 +443,8 @@ test_that("current theme can be updated with new elements", {
 })
 
 test_that("titleGrob() and margins() work correctly", {
+  local_graphics_device()
+
   # ascenders and descenders
   g1 <- titleGrob("aaaa", 0, 0, 0.5, 0.5) # lower-case letters, no ascenders or descenders
   g2 <- titleGrob("bbbb", 0, 0, 0.5, 0.5) # lower-case letters, no descenders

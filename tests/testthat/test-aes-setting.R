@@ -17,6 +17,7 @@ test_that("Length 1 aesthetics are recycled to 0", {
   p <- ggplot(data.frame(x = numeric(), y = numeric())) +
     geom_point(aes(x, y, colour = "red"))
 
+  local_graphics_device()
   expect_silent(plot(p))
 
   data <- get_layer_data(p)

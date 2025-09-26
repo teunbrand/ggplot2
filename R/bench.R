@@ -14,6 +14,7 @@
 
 benchplot <- function(x) {
   x <- enquo(x)
+  withr::local_pdf(nullfile())
   construct <- system.time(x <- eval_tidy(x))
   check_inherits(x, "ggplot2::ggplot")
 

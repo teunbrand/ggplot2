@@ -13,3 +13,7 @@ if (requireNamespace("vdiffr", quietly = TRUE)) {
   # Otherwise, assign a dummy function
   expect_doppelganger <- function(...) skip("vdiffr is not installed.")
 }
+
+local_graphics_device <- function() {
+  withr::local_pdf(new = nullfile(), .local_envir = caller_env())
+}

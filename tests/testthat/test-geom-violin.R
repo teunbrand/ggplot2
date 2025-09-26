@@ -73,7 +73,7 @@ test_that("quantiles do not issue warning", {
   p <- ggplot(data, aes(x = x, y = y)) +
     geom_violin(quantiles = 0.5, quantile.linetype = NULL)
 
-  expect_silent(plot(p))
+  expect_silent(ggplotGrob(p))
 })
 
 

@@ -95,7 +95,7 @@ test_that("size = NA doesn't throw rendering errors", {
   p <- ggplot(df, aes(x = x, y = 0, colour = group)) +
     geom_point(size = NA, na.rm = TRUE)
 
-  expect_silent(plot(p))
+  expect_silent(ggplotGrob(p))
 })
 
 test_that("legend reverse argument reverses the key", {

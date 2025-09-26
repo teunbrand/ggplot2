@@ -156,6 +156,7 @@ test_that("empty guides are dropped", {
   expect_equal(nrow(gd), 0)
 
   # Draw guides
+  local_graphics_device()
   guides <- p@plot@guides$assemble(theme_gray())
 
   # All guide-boxes should be empty

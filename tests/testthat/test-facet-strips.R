@@ -1,4 +1,5 @@
 strip_layout <- function(p) {
+  local_graphics_device()
   data <- ggplot_build(p)
   plot <- data@plot
   layout <- data@layout
@@ -192,6 +193,7 @@ test_that("y strip labels are rotated when strips are switched", {
 })
 
 test_that("strip clipping can be set from the theme", {
+  local_graphics_device()
   labels <- data_frame(var1 = "a")
 
   strip <- render_strips(
