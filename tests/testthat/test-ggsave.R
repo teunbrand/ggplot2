@@ -106,7 +106,7 @@ test_that("ggsave fails informatively for no-extension filenames", {
 # plot_dim ---------------------------------------------------------------
 
 test_that("guesses and informs if dim not specified", {
-  png(width = 10, height = 10, units = "in", res = 300)
+  png(nullfile(), width = 10, height = 10, units = "in", res = 300)
   on.exit(capture.output(dev.off()))
 
   expect_message(out <- plot_dim(), "10 x 10")
