@@ -52,3 +52,25 @@ test_that("strings are not converted to factors", {
 
   expect_type(get_layer_data(p)$label, "character")
 })
+
+test_that("Graphics devices are well behaved during build process", {
+  expect_null_device <- function() {
+    expect_equal(dev.cur(), 1, ignore_attr = "names")
+  }
+
+  # Test that testthat starts with a null device
+  expect_null_device()
+
+  # No new graphics device should be opened during plot construction
+  p <- ggplot(mtcars, aes(disp, mpg)) + geom_point()
+  expect_null_device()
+
+  # Building shouldn't open a new device
+  b <- ggplot_build(p)
+  expect_null_device()
+
+  # Drawing may open a new device, but should also close it
+  gt <- ggplot_gtable(b)
+  expect_null_device()
+})
+

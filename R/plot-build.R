@@ -171,6 +171,12 @@ layer_scales <- get_panel_scales
 get_layer_grob <- function(plot = get_last_plot(), i = 1L) {
   b <- ggplot_build(plot)
 
+  if (isTRUE(dev.cur() == 1)) {
+    dev.new(file = nullfile())
+    temp_dev <- dev.cur()
+    on.exit(dev.off(temp_dev))
+  }
+
   b@plot@layers[[i]]$draw_geom(b@data[[i]], b@layout)
 }
 
@@ -202,6 +208,15 @@ layer_grob <- get_layer_grob
 ggplot_gtable <- function(data) {
   # TODO: Swap to S7 generic once S7/#543 is resolved
   attach_plot_env(data@plot@plot_env)
+
+  if (isTRUE(dev.cur() == 1)) {
+    # When there is no active graphics device, we open a dummy device
+    # to calculate with grid units and measure text.
+    dev.new(file = nullfile())
+    temp_dev <- dev.cur()
+    on.exit(dev.off(temp_dev))
+  }
+
   UseMethod("ggplot_gtable")
 }
 
