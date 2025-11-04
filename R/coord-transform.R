@@ -210,9 +210,17 @@ CoordTransform <- ggproto(
 CoordTrans <- ggproto("CoordTrans", CoordTransform)
 
 transform_value <- function(trans, value, range) {
-  if (is.null(value))
+  if (is.null(value)) {
     return(value)
-  rescale(trans$transform(value), 0:1, range)
+  }
+  if (isTRUE(-Inf %in% trans$domain)) {
+    value <- trans$transform(value)
+  } else {
+    # Tranformation is undefined for -Inf, so we preserve it
+    i <- which(value != -Inf)
+    value[i] <- trans$transform(value[i])
+  }
+  rescale(value, 0:1, range)
 }
 
 # TODO: can we merge this with view_scales_from_scale()?

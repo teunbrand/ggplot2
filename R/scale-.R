@@ -1002,7 +1002,14 @@ Scale <- ggproto("Scale", NULL,
 # This needs to be defined prior to the Scale subclasses.
 default_transform <- function(self, x) {
   transformation <- self$get_transformation()
-  new_x <- transformation$transform(x)
+  if (isTRUE(-Inf %in% transformation$domain)) {
+    new_x <- transformation$transform(x)
+  } else {
+    # Tranformation is undefined for -Inf, so we simply preserve it
+    i <- which(x != -Inf)
+    new_x <- x
+    new_x[i] <- transformation$transform(new_x[i])
+  }
   check_transformation(x, new_x, transformation$name, call = self$call)
   new_x
 }

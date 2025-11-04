@@ -124,6 +124,20 @@ test_that("second axes display in coord_transform()", {
   )
 })
 
+test_that("coord_transform() treats -Inf as minimum", {
+  p <- ggplot(data.frame(x = -Inf), aes(x, x)) +
+    geom_point() +
+    coord_transform(
+      x = "log10", y = "sqrt",
+      xlim = c(0.1, 10), ylim = c(0, 10)
+    )
+  grob <- get_layer_grob(p)[[1]]
+  expect_equal(
+    as.character(unit.c(grob$x, grob$y)),
+    c("0native", "0native")
+  )
+})
+
 test_that("coord_transform() throws error when limits are badly specified", {
   # throws error when limit is a Scale object instead of vector
   expect_snapshot_error(ggplot() + coord_transform(xlim=xlim(1,1)))

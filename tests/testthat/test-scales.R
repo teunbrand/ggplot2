@@ -799,3 +799,13 @@ test_that("discrete scales can map to 2D structures", {
   expect_true(is.matrix(ld$colour))
   expect_equal(dim(ld$colour), c(nrow(mtcars), ncol(df)))
 })
+
+test_that("scale transforms preserve -Inf when out-of-domain", {
+  p <- ggplot(data.frame(x = -Inf), aes(x, x)) +
+    geom_point() +
+    scale_x_log10(limits = c(0.1, 10)) +
+    scale_y_sqrt(limits = c(0, 10))
+
+  ld <- get_layer_data(p)
+  expect_equal(c(ld$x, ld$y), c(-Inf, -Inf))
+})
