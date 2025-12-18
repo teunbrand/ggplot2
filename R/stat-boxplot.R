@@ -67,9 +67,14 @@ StatBoxplot <- ggproto("StatBoxplot", Stat,
     names(stats) <- c("ymin", "lower", "middle", "upper", "ymax")
     iqr <- diff(stats[c(2, 4)])
 
-    outliers <- data$y < (stats[2] - coef * iqr) | data$y > (stats[4] + coef * iqr)
-    if (any(outliers)) {
-      stats[c(1, 5)] <- range(c(stats[2:4], data$y[!outliers]), na.rm = TRUE)
+    if (nrow(data) >= smallest_group) {
+      outliers <- data$y < (stats[2] - coef * iqr) | data$y > (stats[4] + coef * iqr)
+      if (any(outliers)) {
+        stats[c(1, 5)] <- range(c(stats[2:4], data$y[!outliers]), na.rm = TRUE)
+      }
+    } else {
+      stats[] <- NA
+      outliers <- rep(TRUE, nrow(data))
     }
     if (length(data$width) > 0L) {
       width <- data$width[1L]
