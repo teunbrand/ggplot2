@@ -40,6 +40,7 @@ StatBoxplot <- ggproto("StatBoxplot", Stat,
     }
 
     params$width <- params$width %||% (resolution(data$x %||% 0, discrete = TRUE) * 0.75)
+    check_number_whole(params$smallest_group, min = 1, allow_infinite = TRUE, arg = "smallest_group")
 
     if (!is_mapped_discrete(data$x) && is.double(data$x) && !has_groups(data) && any(data$x != data$x[1L])) {
       cli::cli_warn(c(
@@ -53,7 +54,7 @@ StatBoxplot <- ggproto("StatBoxplot", Stat,
 
   extra_params = c("na.rm", "orientation"),
 
-  compute_group = function(data, scales, width = NULL, na.rm = FALSE, coef = 1.5, flipped_aes = FALSE) {
+  compute_group = function(data, scales, width = NULL, na.rm = FALSE, coef = 1.5, smallest_group = 1L, flipped_aes = FALSE) {
     data <- flip_data(data, flipped_aes)
     qs <- c(0, 0.25, 0.5, 0.75, 1)
 
