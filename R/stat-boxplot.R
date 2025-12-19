@@ -40,7 +40,11 @@ StatBoxplot <- ggproto("StatBoxplot", Stat,
     }
 
     params$width <- params$width %||% (resolution(data$x %||% 0, discrete = TRUE) * 0.75)
-    check_number_whole(params$smallest_group, min = 1, allow_infinite = TRUE, arg = "smallest_group")
+    check_number_whole(
+      params$smallest_group %||% 1L,
+      min = 1, allow_infinite = TRUE,
+      arg = "smallest_group"
+    )
 
     if (!is_mapped_discrete(data$x) && is.double(data$x) && !has_groups(data) && any(data$x != data$x[1L])) {
       cli::cli_warn(c(
