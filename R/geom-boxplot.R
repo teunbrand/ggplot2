@@ -269,8 +269,8 @@ GeomBoxplot <- ggproto("GeomBoxplot", Geom,
         out_max <- vapply(data$outliers, max, numeric(1))
       })
 
-      data$ymin_final  <- pmin(out_min, data$ymin)
-      data$ymax_final  <- pmax(out_max, data$ymax)
+      data$ymin_final  <- pmin(out_min, data$ymin, na.rm = TRUE)
+      data$ymax_final  <- pmax(out_max, data$ymax, na.rm = TRUE)
     }
 
     # if `varwidth` not requested or not available, don't use it
