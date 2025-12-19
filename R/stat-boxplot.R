@@ -41,9 +41,9 @@ StatBoxplot <- ggproto("StatBoxplot", Stat,
 
     params$width <- params$width %||% (resolution(data$x %||% 0, discrete = TRUE) * 0.75)
     check_number_whole(
-      params$smallest.group %||% 1L,
+      params$min.group.n %||% 1L,
       min = 1, allow_infinite = TRUE,
-      arg = "smallest.group"
+      arg = "min.group.n"
     )
 
     if (!is_mapped_discrete(data$x) && is.double(data$x) && !has_groups(data) && any(data$x != data$x[1L])) {
@@ -58,7 +58,7 @@ StatBoxplot <- ggproto("StatBoxplot", Stat,
 
   extra_params = c("na.rm", "orientation"),
 
-  compute_group = function(data, scales, width = NULL, na.rm = FALSE, coef = 1.5, smallest.group = 1L, flipped_aes = FALSE) {
+  compute_group = function(data, scales, width = NULL, na.rm = FALSE, coef = 1.5, min.group.n = 1L, flipped_aes = FALSE) {
     data <- flip_data(data, flipped_aes)
     qs <- c(0, 0.25, 0.5, 0.75, 1)
 
@@ -71,7 +71,7 @@ StatBoxplot <- ggproto("StatBoxplot", Stat,
     names(stats) <- c("ymin", "lower", "middle", "upper", "ymax")
     iqr <- diff(stats[c(2, 4)])
 
-    if (nrow(data) >= smallest.group) {
+    if (nrow(data) >= min.group.n) {
       outliers <- data$y < (stats[2] - coef * iqr) | data$y > (stats[4] + coef * iqr)
       if (any(outliers)) {
         stats[c(1, 5)] <- range(c(stats[2:4], data$y[!outliers]), na.rm = TRUE)
