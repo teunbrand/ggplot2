@@ -109,6 +109,10 @@ StatBoxplot <- ggproto("StatBoxplot", Stat,
 
 #' @rdname geom_boxplot
 #' @param coef Length of the whiskers as multiple of IQR. Defaults to 1.5.
+#' @param min.group.n An integer setting the minimum size of a group to draw
+#'   the box and whiskers. Groups with less observations will be displayed as
+#'   points styled like outliers without box and whiskers. The default (1) draws
+#'   box and whiskers for all groups.
 #' @inheritParams shared_layer_parameters
 #' @export
 #' @eval rd_computed_vars(
